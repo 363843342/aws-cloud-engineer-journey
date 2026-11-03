@@ -1,0 +1,49 @@
+https://239124108981-z7sbyha5.us-west-1.console.aws.amazon.com/apigateway/main/deploy/stages?api=m9k6eqk8v1&authorizer=IAM&region=us-west-1&routes=2f3vnui&stage=$default&url=https%3A%2F%2F239124108981-z7sbyha5.us-east-1.console.aws.amazon.com%2Fapigateway%2Fhome%3Fregion%3Dus-east-1%23
+
+root@WIN-4KVQ1CQRK4L:~# curl https://m9k6eqk8v1.execute-api.us-west-1.amazonaws.com/properties/R100234
+{"message":"Internal Server Error"}
+
+
+root@WIN-4KVQ1CQRK4L:~# curl https://m9k6eqk8v1.execute-api.us-west-1.amazonaws.com/properties/R100234
+{"L_SystemPrice": 450000, "L_Keyword2": 3, "L_ListingID": "R100234", "L_City": "Sacramento"}
+
+
+
+WIN-4KVQ1CQRK4L:~# aws sqs create-queue --queue-name property-dlq
+{"QueueUrl": "https://sqs.us-west-1.amazonaws.com/239124108981/property-dlq"}
+
+root@WIN-4KVQ1CQRK4L:~# aws sqs get-queue-attributes \
+>   --queue-url $(aws sqs get-queue-url --queue-name property-dlq --query 'QueueUrl' --output text) \
+>   --attribute-names QueueArn \
+>   --query 'Attributes.QueueArn' \
+>   --output text
+arn:aws:sqs:us-west-1:239124108981:property-dlq
+
+root@WIN-4KVQ1CQRK4L:~# aws sqs create-queue --queue-name property-queue --attributes \
+>   '{"RedrivePolicy":"{\"deadLetterTargetArn\":\"arn:aws:sqs:us-west-1:239124108981:property-dlq\",\"maxReceiveCount\":\"3\"}"}'
+{"QueueUrl": "https://sqs.us-west-1.amazonaws.com/239124108981/property-queue"}
+
+
+
+root@WIN-4KVQ1CQRK4L:~# aws sqs send-message \
+>   --queue-url https://sqs.us-west-1.amazonaws.com/239124108981/property-queue \
+>   --message-body '{"PropertyId":"P1002"}'
+{   "MD5OfMessageBody": "be3f822245bbcadebb0111ec27a7ed71",
+    "MessageId": "6d76838b-e79b-416d-84ab-a01c8f64c020"   }
+
+root@WIN-4KVQ1CQRK4L:~# aws sqs receive-message \
+>   --queue-url https://sqs.us-west-1.amazonaws.com/239124108981/property-queue
+{
+    "Messages": [
+        {
+            "MessageId": "6d76838b-e79b-416d-84ab-a01c8f64c020",
+            "ReceiptHandle": "AQEBxgbDPQZpnnnAIXtPIBxjO58UJ66E+mMQ+8+MoT7WCYgbdcBxgfsKcoNY34JkYABmxll+XingVLPg/FdR/yyv0DlROK46qWK4b8ySZLPCLFbT/Lxs6JAdasGUiq3/7Sr8yYHhu37t2yPKlx9xgQzkpLpN3Cfm6qcoZWQGInmDron+vL8O1zRuf2EtFq02Kaq/U6xIAm9IRUJZD4MuWt2mdshLKifMfc/dguWOnyty2tQY6V33oFbaJyrpoGWgbtbVJTP53+PE3sVXr8WlsWibSTh2bvv+h2JGSv5y/I7LF2v1/awo/4XIHxUJYCbTUqOh+ay0PUFBwhsZUnGDXcPlRPk9acKUs5HtGaMyygVroZd/y9rLIZMxvd1McL/TmYd8RP1GBuvbgFZ32GwRqRsMKw==",
+            "MD5OfBody": "be3f822245bbcadebb0111ec27a7ed71",
+            "Body": "{\"PropertyId\":\"P1002\"}"
+        }
+    ]
+}
+
+
+
+
