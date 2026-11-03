@@ -8,7 +8,7 @@ In this lab, PropertyLite's read path was refactored from an always-on EC2 compu
 ## 2. Request Path Architecture
 
 ### Architecture Flowchart
-```mermaid
+mermaid
 flowchart LR
     Client([Client / Laptop]) -->|GET /properties/{id}| APIGW[API Gateway HTTP API\nm9k6eqk8v1.execute-api]
     APIGW -->|Proxy Payload Event| Lambda[AWS Lambda\nget-property]
@@ -16,7 +16,7 @@ flowchart LR
     DynamoDB -->|Item Document| Lambda
     Lambda -->|JSON 200 OK| APIGW
     APIGW -->|HTTP Response| Client
-```
+    
 
 ### Detailed Sequence Diagram
 ```
