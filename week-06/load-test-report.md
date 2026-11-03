@@ -56,7 +56,7 @@ Once the stress test was running, the instance's CPU utilization surged to nearl
 * **Alarm Trigger Timestamp:** `2026-10-30T23:38:15Z` *(replace with your exact UTC timestamp from CloudWatch)*
 
 ### CloudWatch Metric Spike Screenshot
-![CloudWatch CPU Utilization AlarmHigh](screenshots/cloudwatch-alarm-high.png)
+![CloudWatch CPU Utilization AlarmHigh](CPUUtilization.PNG)
 
 > **Figure 1:** CloudWatch Alarm showing metric spike breaching the $50\%$ threshold line and transitioning into `In alarm` status.
 
@@ -73,7 +73,7 @@ In response to the `AlarmHigh` state notification, the target tracking policy re
 * **Result Status:** `Successful`
 
 ### ASG Activity History Screenshot
-![ASG Activity Scale-Out Event](screenshots/asg-scale-out-activity.png)
+![ASG Activity Scale-Out Event](changingcapacity.PNG)
 
 > **Figure 2:** ASG Activity history displaying the successful scale-out event and transition of desired capacity from 2 to 3 instances.
 
