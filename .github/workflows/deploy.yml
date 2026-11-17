@@ -1,4 +1,4 @@
-name: Deploy PropertyLite to ECS
+name: Deploy PropertyLite to ECS1
 
 on:
   push:
