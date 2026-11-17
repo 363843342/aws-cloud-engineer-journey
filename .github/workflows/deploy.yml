@@ -1,19 +1,28 @@
-name: Deploy PropertyLite to ECS 
-on: { push: { branches: [main] } } 
-permissions: { id-token: write, contents: read } 
-jobs:   
-  deploy: 
-    runs-on: ubuntu-latest     
-    steps: 
-      - uses: actions/checkout@v4 
-      - uses: aws-actions/configure-aws-credentials@v4         
-        with:           
-          role-to-assume: arn:aws:iam::239124108981:role/github-actions-deploy-role           
-          aws-region: us-west-1 
-      - run: aws ecr get-login-password | docker login --username AWS --password-stdin 239124108981.dkr.ecr.us-west-1.amazonaws.com 
-      - run: |           
-          cd propertylite           
-          docker build -t property-api . 
-          docker tag property-api:latest 239124108981.dkr.ecr.us-west-1.amazonaws.com/property-api:latest 
-          docker push 239124108981.dkr.ecr.us-west-1.amazonaws.com/property-api:latest 
+name: Deploy PropertyLite to ECS
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::239124108981:role/github-actions-deploy-role
+          aws-region: us-west-1
+      - run: aws ecr get-login-password | docker login --username AWS --password-stdin 239124108981.dkr.ecr.us-west-1.amazonaws.com
+      - run: |
+          cd propertylite
+          docker build -t property-api .
+          docker tag property-api:latest 239124108981.dkr.ecr.us-west-1.amazonaws.com/property-api:latest
+          docker push 239124108981.dkr.ecr.us-west-1.amazonaws.com/property-api:latest
       - run: aws ecs update-service --cluster training-cluster --service property-api-service --force-new-deployment
