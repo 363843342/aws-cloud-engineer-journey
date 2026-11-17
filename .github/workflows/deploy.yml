@@ -31,6 +31,7 @@ jobs:
 
       - run: |
           cd propertylite
+          ls -la
           docker build -t property-api .
           docker tag property-api:latest 239124108981.dkr.ecr.us-west-1.amazonaws.com/property-api:latest
           docker push 239124108981.dkr.ecr.us-west-1.amazonaws.com/property-api:latest
